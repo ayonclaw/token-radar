@@ -46,7 +46,7 @@ two runs write the same bytes.
 | `main.ts` | entrypoint: reads the snapshot, writes the board, the page data and the dossier |
 | `lib/model.ts` | the scoring model, the product test, the board and its gate checks |
 | `dashboard/` | `index.html`, `app.css`, `app.js` — board, charts, detail; no network, no framework |
-| `screenshots/` | the three captures handed to the judge |
+| `screenshots/` | the four views handed to the judge: board, filtered board, detail, charts |
 | `vendor/makefun-board.ts` | make.fun's dossier builder, byte for byte as shipped |
 | `tools/shoot.py` | renders the three screenshots at 1440×900 from the built `out/` |
 

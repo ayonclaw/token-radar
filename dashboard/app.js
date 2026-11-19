@@ -88,7 +88,8 @@
   // ---------------------------------------------------------------- table
 
   const chainCell = (r) => {
-    const first = r.chains[0] ?? '—';
+    // With a chain filter on, name the chain that matched the filter, not the protocol's first one.
+    const first = state.chain !== 'all' && r.chains.includes(state.chain) ? state.chain : r.chains[0] ?? '—';
     const more = r.chains.length > 1 ? `<span class="more">+${r.chains.length - 1}</span>` : '';
     return `<svg><use href="#i-chain"/></svg><span>${esc(first)}</span>${more}`;
   };

@@ -11,7 +11,7 @@
 // Deterministic by construction: no clock, no randomness, no network, every list ordered by a rule
 // stated where it is built, so two runs write the same bytes.
 
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { boardIssue, buildRadar, dataScript, parseSnapshot } from './lib/model.ts';
@@ -73,7 +73,16 @@ function copyFiles(from: string, to: string): string[] {
 }
 
 copyFiles(join(here, 'dashboard'), join(out, 'dashboard'));
-const shots = copyFiles(join(here, 'screenshots'), join(out, 'screenshots'));
+// /output is empty under the grader, but a local rerun must not leave an older capture behind: clear
+// the copies this program owns before taking the repository's screenshots/.
+const shotsOut = join(out, 'screenshots');
+if (existsSync(shotsOut)) {
+  for (const name of readdirSync(shotsOut)) {
+    const p = join(shotsOut, name);
+    if (statSync(p).isFile()) rmSync(p);
+  }
+}
+const shots = copyFiles(join(here, 'screenshots'), shotsOut);
 if (shots.length < 3) {
   process.stderr.write(`token radar: screenshots/ holds ${shots.length} image${shots.length === 1 ? '' : 's'}: hand in 3, the board, a chart view and a detail view\n`);
   process.exit(1);

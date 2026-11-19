@@ -26,8 +26,9 @@ url = 'file://' + os.path.join(OUT, 'dashboard', 'index.html')
 
 SHOTS = [
     ('1-board.jpg', '', 84),
-    ('2-charts.jpg', '?view=charts', 88),
+    ('2-filtered.jpg', '?chain=Base&watch=1', 86),
     ('3-detail.jpg', '?p=' + best_detail, 86),
+    ('4-charts.jpg', '?view=charts', 88),
 ]
 
 
