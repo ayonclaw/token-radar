@@ -7,179 +7,83 @@
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<a class="skip" href="#board">Skip to the board</a>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.4" class="fill"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-chain" viewBox="0 0 24 24"><path d="M9 15l6-6"/><path d="M11 6.5 13 4.5a4 4 0 016 6l-2 2"/><path d="M13 17.5 11 19.5a4 4 0 01-6-6l2-2"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" class="fill"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 20v-6M13 20V8M18 20v-9"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+</svg>
 
-<header class="masthead">
-  <div class="wrap masthead-in">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-text"><b>Token Radar</b><i>pre-token launch board</i></span>
-    </div>
-    <dl class="stamp">
-      <div><dt>Snapshot</dt><dd data-bind="as_of">—</dd></div>
-      <div><dt>Source</dt><dd data-bind="source">—</dd></div>
-      <div><dt>Model</dt><dd data-bind="model_version">—</dd></div>
-      <div><dt>Floor</dt><dd data-bind="floor">—</dd></div>
-    </dl>
+<header class="top">
+  <div class="brand">
+    <svg class="glyph"><use href="#i-radar"/></svg>
+    <span class="word">TOKEN<span class="slash">/</span>RADAR</span>
+    <span class="tag">pre-token desk</span>
   </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="board" class="on"><svg><use href="#i-grid"/></svg>board</button>
+    <button data-view="charts"><svg><use href="#i-chart"/></svg>charts</button>
+    <button data-view="excluded"><svg><use href="#i-x"/></svg>token listed</button>
+  </nav>
+  <div class="meta" id="meta"></div>
 </header>
 
-<main class="wrap" id="board">
+<section class="kpis" id="kpis"></section>
 
-  <section class="lede" aria-labelledby="lede-h">
-    <div class="lede-copy">
-      <h1 id="lede-h">What a protocol's token would be worth, ranked</h1>
-      <p>
-        The snapshot holds <span data-bind="protocols_seen">—</span> protocols DefiLlama tracks. Of them,
-        <span data-bind="live_total">—</span> record a token and <span data-bind="pretoken_total">—</span> record none.
-        The board ranks the ones that record none by a value derived from the protocol's own figures, and every row
-        carries the steps to farm it. A protocol that records no token is not proof it has none — only that
-        DefiLlama's record carries none.
-      </p>
-      <p class="caveat">
-        An implied value is this dashboard's own claim, never a promise and never a price. It is what the record in
-        this snapshot supports, and it moves when the record moves.
-      </p>
-    </div>
-    <dl class="figures" data-bind="figures"></dl>
-  </section>
+<section class="controls" id="controls">
+  <label class="field search"><svg><use href="#i-search"/></svg>
+    <input id="q" type="search" placeholder="protocol, category, chain" autocomplete="off" spellcheck="false">
+  </label>
+  <label class="field"><span>chain</span><select id="chain"></select></label>
+  <label class="field"><span>category</span><select id="cat"></select></label>
+  <label class="field"><span>sort</span><select id="sort">
+    <option value="rank">implied value</option>
+    <option value="tvl">tvl</option>
+    <option value="months">months, no token</option>
+    <option value="mult">multiple</option>
+    <option value="chg7">7-day change</option>
+    <option value="name">name</option>
+  </select></label>
+  <label class="check"><input id="watchOnly" type="checkbox"><span>watchlist only</span></label>
+  <button class="ghost" id="reset"><svg><use href="#i-x"/></svg>reset</button>
+  <div class="count" id="count"></div>
+</section>
 
-  <section class="panel board-panel" aria-labelledby="controls-h">
-    <h2 class="visually-hidden" id="controls-h">Board controls</h2>
-    <form class="controls" id="controls" autocomplete="off">
-      <p class="field field-search">
-        <label for="q">Search</label>
-        <input type="search" id="q" name="q" placeholder="protocol, category or chain">
-      </p>
-      <p class="field">
-        <label for="category">Category</label>
-        <select id="category" name="category"><option value="all">All categories</option></select>
-      </p>
-      <p class="field">
-        <label for="chain">Chain</label>
-        <select id="chain" name="chain"><option value="all">All chains</option></select>
-      </p>
-      <p class="field">
-        <label for="minTvl">TVL at least</label>
-        <select id="minTvl" name="minTvl">
-          <option value="0">Any size</option>
-          <option value="10000000">$10M</option>
-          <option value="50000000">$50M (the watchlist floor)</option>
-          <option value="250000000">$250M</option>
-          <option value="1000000000">$1B</option>
-        </select>
-      </p>
-      <p class="field field-check">
-        <label><input type="checkbox" id="onlyWl" name="onlyWl"> Watchlist only</label>
-      </p>
-      <p class="field field-buttons">
-        <button type="button" class="btn primary" id="reset">Reset filters</button>
-      </p>
-      <output class="tally" id="tally" for="q category chain minTvl onlyWl">—</output>
-    </form>
-
-    <nav class="views" aria-label="Board views">
-      <button type="button" class="viewbtn" data-view="board" aria-pressed="true">
-        Ranked board <span data-bind="board_size">—</span>
-      </button>
-      <button type="button" class="viewbtn" data-view="live" aria-pressed="false">
-        Token already trades <span data-bind="live_size">—</span>
-      </button>
-      <button type="button" class="viewbtn" data-view="setaside" aria-pressed="false">
-        Set aside pre-token <span data-bind="set_aside_size">—</span>
-      </button>
-    </nav>
-
-    <p class="view-note" id="view-note">—</p>
-
-    <div class="table-housing">
-      <table id="grid">
-        <caption id="grid-caption">—</caption>
-        <thead id="grid-head"></thead>
-        <tbody id="grid-body"></tbody>
-      </table>
-      <p class="empty" id="empty" hidden>
-        <b>No protocol matches those filters.</b>
-        <span>Widen the search, raise the TVL floor or clear the category, and the board comes back.</span>
-        <button type="button" class="btn" id="empty-reset">Clear filters</button>
-      </p>
-    </div>
-  </section>
+<main id="main">
+  <div class="board-wrap">
+    <table class="board" id="board">
+      <thead><tr>
+        <th class="c-rank sortable" data-sort="rank">#</th>
+        <th class="c-name">protocol</th>
+        <th class="c-chain">chain</th>
+        <th class="c-num sortable" data-sort="tvl">tvl</th>
+        <th class="c-num sortable" data-sort="chg7">7d</th>
+        <th class="c-num sortable" data-sort="months">no token</th>
+        <th class="c-num">×mult</th>
+        <th class="c-score">score</th>
+        <th class="c-num">implied $</th>
+        <th class="c-why">why this one</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden></div>
+  </div>
+  <aside class="rail" id="rail"></aside>
 </main>
 
-<section class="panel method" aria-labelledby="method-h">    <header class="panel-head">
-      <h2 id="method-h">How an implied value is derived</h2>
-      <p class="sub">One function scores every protocol. No protocol's name is treated differently from any other's.</p>
-    </header>
-    <div class="method-grid">
-      <div class="method-main">
-        <ol class="derivation">
-          <li>
-            <h3>Calibrate on the snapshot's own priced protocols</h3>
-            <p>
-              <span data-bind="sample_size">—</span> protocols carry both a TVL and a market cap. They are the only
-              evidence the file holds about the size of a DeFi protocol next to its TVL, so the model fits its
-              coefficients on them on every run:
-            </p>
-            <p class="formula">log<sub>10</sub>(market cap) = <span data-bind="coef-intercept">a</span>
-              + <span data-bind="coef-size">b</span> × log<sub>10</sub>(base TVL)
-              + <span data-bind="coef-mom">m</span> × relative 7-day move
-              + category adjustment</p>
-            <p class="sub" data-bind="fit-note">—</p>
-          </li>
-          <li>
-            <h3>Score every protocol that records no token, and rank them</h3>
-            <p class="formula">implied value = 10<sup>(a + b·log<sub>10</sub>(base TVL) + m·rel. growth)</sup>
-              × category adjustment × tenure premium</p>
-            <p>
-              <b>Base TVL</b> is the TVL the snapshot prints with the week's own move taken back out, so a single week
-              of growth enters the score once instead of twice.
-              <b>Relative growth</b> is the protocol's 7-day change against the snapshot's own median change of
-              <span data-bind="tide">—</span>, so a protocol is marked up for outgrowing the field and down for falling
-              behind it, never for the field's own direction.
-            </p>
-          </li>
-        </ol>
-      </div>
-      <aside class="method-side">
-        <h3>What the fit cannot set, and how it is handled</h3>
-        <p>
-          <b>The magnitude of the growth weight.</b> The snapshot's market caps and its TVL print were read at the same
-          instant, so the raw cross-sectional fit puts a <em>negative</em> sign on the 7-day move
-          (<span data-bind="fitted-growth">—</span>) — an artefact of a freshly-printed TVL sitting under a market cap
-          set earlier, not a finding that growth destroys value. The model states the positive sign a reader expects and
-          damps the magnitude. The cost is measurable and printed, not hidden: <span data-bind="r2-note">—</span>
-        </p>
-        <p>
-          <b>Tenure.</b> None of the priced protocols is pre-token, so the file carries no evidence about what a long
-          run with no token is worth. The tenure premium is a stated prior, not a fitted number: a multiplier in
-          <b>0.80 to 1.20</b>, monotone in the years a protocol has run with no token, identical for every protocol.
-          It is the one term here the data cannot check, and this panel says so.
-        </p>
-        <p>
-          <b>Category.</b> Each category's residual after size, measured on the priced protocols and shrunk toward zero
-          so a thin category cannot dominate. A category the fit never saw scores exactly 1.00.
-        </p>
-      </aside>
-    </div>
-  </section>
+<section class="charts" id="charts" hidden></section>
+<section class="detail" id="detail" hidden></section>
 
-  <aside class="drawer" id="drawer" aria-labelledby="drawer-title" hidden>
-  <div class="drawer-bar">
-    <span class="drawer-rank" id="drawer-rank">—</span>
-    <button type="button" class="btn" id="drawer-close" aria-label="Close the detail view">Close</button>
-  </div>
-  <div class="drawer-body" id="drawer-body"></div>
-</aside>
-<div class="scrim" id="scrim" hidden></div>
-
-<footer class="pagefoot">
-  <div class="wrap">
-    <p>
-      Built from one sealed DefiLlama snapshot. Every figure on this page comes from that file; the page makes no
-      request and needs no network. Implied values are this radar's own claims and are not predictions.
-    </p>
-  </div>
+<footer class="foot">
+  <span class="formula" id="formula"></span>
+  <span class="src" id="src"></span>
 </footer>
 
 <script src="../data.js"></script>
